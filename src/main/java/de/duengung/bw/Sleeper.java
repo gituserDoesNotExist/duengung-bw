@@ -10,5 +10,14 @@ public class Sleeper {
 			throw new RuntimeException("Thread was interrupted");
 		}
 	}
+	
+	public static void sleepALittleBitLonger() {
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			Thread.interrupted();
+			throw new RuntimeException("Thread was interrupted");
+		}
+	}
 
 }

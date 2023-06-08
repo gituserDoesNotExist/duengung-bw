@@ -21,6 +21,7 @@ public class Schlaginfo {
 	int dungVorjahrRindermist;
 	int dungVorjahrPferdemist;
 	int dungVorjahrGaerrest;
+	String bodenart;
 
 	public boolean wurdeImVorjahrGeduengt() {
 		return dungVorjahrGaerrest > 0 || dungVorjahrGuelle > 0 || dungVorjahrRindermist > 0 || dungVorjahrPferdemist > 0;

@@ -23,7 +23,8 @@ public class PDbePage {
 			page.locator("[id$='resteAbgefahrenOpt0']").click();
 		}
 		clickDropDown("[id$='bodenartInput']");
-		page.getByRole(AriaRole.OPTION, new Page.GetByRoleOptions().setName("Sand, S")).click();
+		String bodenartUi = BodenartUIConverter.toUIBezeichnungBodenart(schlaginfo.bodenart);
+		page.getByRole(AriaRole.OPTION, new Page.GetByRoleOptions().setName(bodenartUi)).click();
 
 		page.locator("[id$='gehalteEingebenOpt1']").click();
 		page.locator("[id$='pGehaltsklasseInput_label']").click();

@@ -16,7 +16,6 @@ import com.microsoft.playwright.Playwright;
 
 class AppTest {
 
-	private List<Schlaginfo> schlaege;
 	private Playwright playwright;
 	private Page page;
 
@@ -26,7 +25,6 @@ class AppTest {
 		Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
 		BrowserContext context = browser.newContext();
 		page = context.newPage();
-		schlaege = new SchlaginfoRepository().getSchlaege();
 	}
 
 	@AfterEach
@@ -41,7 +39,6 @@ class AppTest {
 		LoginPage loginPage = goToLoginPage();
 		DuengungBwDashboard dashboard = loginPage.login();
 		SchlaegePage schlaegePage = dashboard.goToSchlaege();
-		Sleeper.sleepALittleBit();
 		schlaegePage.deleteAllSchlaege();
 	}
 
@@ -63,23 +60,25 @@ class AppTest {
 
 	@Test
 	public void schlaegeAnlegen() {
+		List<Schlaginfo> schlaege = new SchlaginfoRepository().getSchlaege();
+		
 		LoginPage loginPage = goToLoginPage();
 		DuengungBwDashboard dashboard = loginPage.login();
 		SchlaegePage schlaegePage = dashboard.goToSchlaege();
 
 		schlaege.forEach(schlaginfo -> {
-			Sleeper.sleepALittleBit();
 			schlaegePage.createNewSchlag(schlaginfo);
 		});
 	}
 
 	@Test
-	public void nDbe() throws FileNotFoundException, IOException, InterruptedException {
+	public void nDbe() {
+		List<Schlaginfo> schlaege = new SchlaginfoRepository().getSchlaege();
 		LoginPage loginPage = goToLoginPage();
 		DuengungBwDashboard dashboard = loginPage.login();
 
 		schlaege.forEach(schlaginfo -> {
-			Sleeper.sleepALittleBit();
+			Sleeper.sleepALittleBitLonger();
 			NDbePage nDbePage = dashboard.goFromStartpageToNDuengebedarfsermittlung();
 			nDbePage.createNDuengebedarfsermittlung(schlaginfo);
 		});
@@ -87,12 +86,13 @@ class AppTest {
 	}
 
 	@Test
-	public void pDbe() throws FileNotFoundException, IOException, InterruptedException {
+	public void pDbe() {
+		List<Schlaginfo> schlaege = new SchlaginfoRepository().getSchlaege();
 		LoginPage loginPage = goToLoginPage();
 		DuengungBwDashboard dashboard = loginPage.login();
 
 		schlaege.forEach(schlaginfo -> {
-			Sleeper.sleepALittleBit();
+			Sleeper.sleepALittleBitLonger();
 			PDbePage pDbePage = dashboard.goFromStartpageToPDuengebedarfsermittlung();
 			pDbePage.createPDuengebedarfsermittlung(schlaginfo);
 		});

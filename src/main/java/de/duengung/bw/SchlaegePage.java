@@ -1,5 +1,8 @@
 package de.duengung.bw;
 
+import static de.duengung.bw.BodenartUIConverter.toUIBezeichnungBodenart;
+import static de.duengung.bw.BodenartUIConverter.toUIBezeichnungBodenartGruppe;
+
 import com.microsoft.playwright.FrameLocator;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -16,6 +19,7 @@ public class SchlaegePage {
 	}
 
 	public void deleteAllSchlaege() {
+		page.waitForSelector("#schlaegeTabelleForm\\:schlaegeTable_data tr:first-child");
 		Locator tableRowLocator = page.locator("#schlaegeTabelleForm\\:schlaegeTable_data tr:first-child");
 		while (tableRowLocator.count() == 1) {
 			tableRowLocator.click();
@@ -31,46 +35,61 @@ public class SchlaegePage {
 		System.out.println("Create Schlag with name " + schlaginfo.schlagname);
 		page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Neuen Schlag anlegen")).click();
 		Sleeper.sleepALittleBit();
-		page.frameLocator(IFRAME_NEUER_SCHLAG).getByLabel("Schlagname*").fill(schlaginfo.schlagname);
+		FrameLocator schlagFrameLocator = page.frameLocator(IFRAME_NEUER_SCHLAG);
+
+		schlagFrameLocator.getByLabel("Schlagname*").fill(schlaginfo.schlagname);
 		Sleeper.sleepALittleBit();
-		page.frameLocator(IFRAME_NEUER_SCHLAG).getByLabel("Schlagnummer").fill(schlaginfo.schlagnummer);
+		schlagFrameLocator.getByLabel("Schlagnummer").fill(schlaginfo.schlagnummer);
 		Sleeper.sleepALittleBit();
 
-		page.frameLocator(IFRAME_NEUER_SCHLAG).locator("[id$='dienstbezirkInput_label']").click();
+		schlagFrameLocator.locator("[id$='dienstbezirkInput_label']").click();
 		Sleeper.sleepALittleBit();
-		page.frameLocator(IFRAME_NEUER_SCHLAG).getByRole(AriaRole.OPTION, new FrameLocator.GetByRoleOptions().setName("Rems-Murr-Kreis")).click();
+		schlagFrameLocator.getByRole(AriaRole.OPTION, new FrameLocator.GetByRoleOptions().setName("Rems-Murr-Kreis")).click();
 		Sleeper.sleepALittleBit();
-		page.frameLocator(IFRAME_NEUER_SCHLAG).locator("[id$='gemarkungDetailDialogInput']").click();
+		schlagFrameLocator.locator("[id$='gemarkungDetailDialogInput']").click();
 		Sleeper.sleepALittleBit();
-		page.frameLocator(IFRAME_NEUER_SCHLAG).getByRole(AriaRole.OPTION, new FrameLocator.GetByRoleOptions().setName(schlaginfo.germarkung)).click();
+		schlagFrameLocator.getByRole(AriaRole.OPTION, new FrameLocator.GetByRoleOptions().setName(schlaginfo.germarkung)).click();
 		Sleeper.sleepALittleBit();
 
-		page.frameLocator(IFRAME_NEUER_SCHLAG).locator("[id=\"schlagDetailForm\\:schlagDetailGrid\\:j_idt69\\:nitratgebiet\\:nitratgebietOpt1\"] span").click();
-		page.frameLocator(IFRAME_NEUER_SCHLAG).getByLabel("Schlaggröße*").fill(schlaginfo.schlaggroesse);
-		page.frameLocator(IFRAME_NEUER_SCHLAG).getByLabel("Durchwurzelungstiefe*").fill("30");
+		schlagFrameLocator.locator("[id$='nitratgebiet']").getByText("nein").click();
+		schlagFrameLocator.getByLabel("Schlaggröße*").fill(schlaginfo.schlaggroesse);
+		schlagFrameLocator.getByLabel("Durchwurzelungstiefe*").fill("30");
+
+		schlagFrameLocator.locator("[id$='bodenschwere']").getByText(toUIBezeichnungBodenartGruppe(schlaginfo.bodenart)).click();
+		if (isBodenartLeichtOrMittel(schlaginfo)) {
+			schlagFrameLocator.locator("[id$='bodenartInput_label']").click();
+			Sleeper.sleepALittleBit();
+			schlagFrameLocator.getByRole(AriaRole.OPTION, new FrameLocator.GetByRoleOptions().setName(toUIBezeichnungBodenart(schlaginfo.bodenart))).click();
+			Sleeper.sleepALittleBit();
+		}
 
 		if (schlaginfo.ackerzahl <= 40) {
-			page.frameLocator(IFRAME_NEUER_SCHLAG).getByText("bis 40").click();
+			schlagFrameLocator.getByText("bis 40").click();
 
 		} else if (schlaginfo.ackerzahl > 40 && schlaginfo.ackerzahl <= 60) {
-			page.frameLocator(IFRAME_NEUER_SCHLAG).getByText("40 - 60").click();
+			schlagFrameLocator.getByText("40 - 60").click();
 		} else {
-			page.frameLocator(IFRAME_NEUER_SCHLAG).getByText("über 60").click();
+			schlagFrameLocator.getByText("über 60").click();
 		}
 
+		Locator divWsg = schlagFrameLocator.locator("[id$='gridWasserschutzPnl']");
 		if (schlaginfo.wasserschutzgebiet) {
-			page.frameLocator(IFRAME_NEUER_SCHLAG).locator("[id$='wasserschutzgebietOpt0'] div").nth(2).click();
+			divWsg.getByText("Normalgebiet").click();
+			divWsg.getByText("B-Boden");
 		} else {
-			page.frameLocator(IFRAME_NEUER_SCHLAG).locator("[id$='wasserschutzgebietOpt0'] div").nth(1).click();
+			divWsg.getByText("nein");
 		}
 
-		page.frameLocator(IFRAME_NEUER_SCHLAG).locator("[id$='gehalteEingebenOpt1']").click();
-		page.frameLocator(IFRAME_NEUER_SCHLAG).locator("[id$='pGehaltsklasseInput_label']").click();
+		schlagFrameLocator.locator("[id$='gehalteEingebenOpt1']").click();
+		schlagFrameLocator.locator("[id$='pGehaltsklasseInput_label']").click();
 		Sleeper.sleepALittleBit();
-		page.frameLocator(IFRAME_NEUER_SCHLAG).getByRole(AriaRole.OPTION, new FrameLocator.GetByRoleOptions().setName(schlaginfo.pGehaltsklasse).setExact(true))
-				.click();
+		schlagFrameLocator.getByRole(AriaRole.OPTION, new FrameLocator.GetByRoleOptions().setName(schlaginfo.pGehaltsklasse).setExact(true)).click();
 
-		page.frameLocator(IFRAME_NEUER_SCHLAG).getByRole(AriaRole.BUTTON, new FrameLocator.GetByRoleOptions().setName("Speichern")).click();
+		schlagFrameLocator.getByRole(AriaRole.BUTTON, new FrameLocator.GetByRoleOptions().setName("Speichern")).click();
+	}
+
+	private boolean isBodenartLeichtOrMittel(Schlaginfo schlaginfo) {
+		return Bodenart.getFromBezeichnung(schlaginfo.bodenart).getGruppe().isLeichtOrMittel();
 	}
 
 }

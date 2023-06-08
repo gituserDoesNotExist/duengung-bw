@@ -45,16 +45,17 @@ public class SchlaginfoRepository {
 			schlaginfo.zwischenfrucht = datensatz.get(5);
 			schlaginfo.hauptfruchtVorjahr = datensatz.get(6);
 			schlaginfo.hauptfrucht = datensatz.get(7);
-			schlaginfo.ackerzahl = Integer.valueOf(datensatz.get(8));
-			schlaginfo.wasserschutzgebiet = datensatz.get(9) == "Normalgebiet";
-			schlaginfo.nMin = Integer.valueOf(datensatz.get(10));
-			schlaginfo.isGetreide = Boolean.valueOf(datensatz.get(11));
-			schlaginfo.isFeldfutter = Boolean.valueOf(datensatz.get(12));
-			schlaginfo.isGruenland = Boolean.valueOf(datensatz.get(13));
-			schlaginfo.dungVorjahrGuelle = Integer.valueOf(datensatz.get(14));
-			schlaginfo.dungVorjahrRindermist = Integer.valueOf(datensatz.get(15));
-			schlaginfo.dungVorjahrPferdemist = Integer.valueOf(datensatz.get(16));
-			schlaginfo.dungVorjahrGaerrest = Integer.valueOf(datensatz.get(17));
+			schlaginfo.bodenart = datensatz.get(8);
+			schlaginfo.ackerzahl = Integer.valueOf(datensatz.get(9));
+			schlaginfo.wasserschutzgebiet = Boolean.valueOf(datensatz.get(10));
+			schlaginfo.nMin = Integer.valueOf(datensatz.get(11));
+			schlaginfo.isGetreide = Boolean.valueOf(datensatz.get(12));
+			schlaginfo.isFeldfutter = Boolean.valueOf(datensatz.get(13));
+			schlaginfo.isGruenland = Boolean.valueOf(datensatz.get(14));
+			schlaginfo.dungVorjahrGuelle = Integer.valueOf(datensatz.get(15));
+			schlaginfo.dungVorjahrRindermist = Integer.valueOf(datensatz.get(16));
+			schlaginfo.dungVorjahrPferdemist = Integer.valueOf(datensatz.get(17));
+			schlaginfo.dungVorjahrGaerrest = Integer.valueOf(datensatz.get(18));
 			schlaginfos.add(schlaginfo);
 		}
 		return schlaginfos;
